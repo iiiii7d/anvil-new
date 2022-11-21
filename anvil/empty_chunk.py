@@ -23,7 +23,7 @@ class EmptyChunk:
     def __init__(self, x: int, z: int):
         self.x = x
         self.z = z
-        self.sections: List[EmptySection] = [None]*16
+        self.sections: List[EmptySection] = [None]*24
         self.version = 2566
 
     def add_section(self, section: EmptySection, replace: bool = True):
@@ -72,7 +72,7 @@ class EmptyChunk:
             raise OutOfBoundsCoordinates(f'X ({x!r}) must be in range of 0 to 15')
         if z < 0 or z > 15:
             raise OutOfBoundsCoordinates(f'Z ({z!r}) must be in range of 0 to 15')
-        if y < -63 or y > 319:
+        if y < -64 or y > 319:
             raise OutOfBoundsCoordinates(f'Y ({y!r}) must be in range of -63 to 319')
         section = self.sections[y // 16]
         if section is None:
@@ -100,13 +100,13 @@ class EmptyChunk:
             raise OutOfBoundsCoordinates(f'X ({x!r}) must be in range of 0 to 15')
         if z < 0 or z > 15:
             raise OutOfBoundsCoordinates(f'Z ({z!r}) must be in range of 0 to 15')
-        if y < -63 or y > 319:
+        if y < -64 or y > 319:
             raise OutOfBoundsCoordinates(f'Y ({y!r}) must be in range of -63 to 319')
-        section = self.sections[y // 16]
+        section = self.sections[(y + 64) // 16]
         if section is None:
-            section = EmptySection(y // 16)
+            section = EmptySection((y + 64) // 16)
             self.add_section(section)
-        section.set_block(block, x, y % 16, z)
+        section.set_block(block, x, (y + 64) % 16, z)
 
     def save(self) -> nbt.NBTFile:
         """
